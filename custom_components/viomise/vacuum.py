@@ -284,7 +284,7 @@ class MiroboVacuum2(StateVacuumEntity):
         mode = self.vacuum_state['mode']
         is_mop = self.vacuum_state['is_mop']
         actionMode = 0
-        
+
         #Sweep type / mode: 0=Global, 1=Mop, 2=Edge, 3=Area, 4=Point, 5= Control
 
         if mode == 4 and self._last_clean_point is not None:
@@ -430,7 +430,6 @@ class MiroboVacuum2(StateVacuumEntity):
             # For ViomiSE
             # mop_type: 0=NoMop 1=MopAttached
             # box_type: 0=NoBox, 1=DustBox, 2=WhaterBox, 3=2in1Box
-
             mop_type = int(self.vacuum_state['mop_type'])
             box_type = int(self.vacuum_state['box_type'])
 
@@ -444,7 +443,12 @@ class MiroboVacuum2(StateVacuumEntity):
             elif box_type == 1:
                 update_mop = 0
 
-            if update_mop is not None:
+            # TODO: This doesn't work with Viomi v3 which supports vacum, mop and vacuum and
+            # mop mode. For now simply commenting it out, allows mopping to proceeed.
+            # I assume this code tries to update the state based on which box is present, but this
+            # doesn't seem to work and it's not needed with Viomi v3 which automatically changes
+            # internal state when the box is changed.
+            if False and update_mop is not None:
                 self._vacuum.raw_command('set_mop', [update_mop])
                 self.update()
         except OSError as exc:
